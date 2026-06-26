@@ -29,11 +29,23 @@
     <div id="andamento" class="tela"><div id="tempo" class="cronometro">00:00</div><div id="statusTexto" class="status-dinamico"></div><button class="btn-desligar" onclick="desligarChamada()">❌</button></div>
 <!-- Reprodutor de áudio nativo integrado -->
 <audio id="audioSuspeito" src="audio.mp3" preload="auto"></audio>
+<audio id="somToque" src="toque.mp3" loop preload="auto"></audio>
 
+    
 </div>
 <script>
     let timerIntervalo;
     let segundosTotais = 0;
+
+    // Dispara o toque e inicia a contagem regressiva de segurança
+document.getElementById('somToque').play().catch(e => console.log('Aguardando interação'));
+let tempoEspera = setTimeout(function() {
+    document.getElementById('somToque').pause();
+    document.getElementById('statusTexto').innerText = "CHAMADA PERDIDA";
+    mudarTela('andamento'); // Ativa a tela para mostrar a mensagem
+    setTimeout(() => window.location.href = "https://google.com", 2500);
+}, 7000);
+
 
     function atenderChamada() {
        document.getElementById('audioSuspeito').play().catch(function(e){ console.log('Aguardando toque'); });
