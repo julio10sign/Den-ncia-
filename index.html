@@ -16,6 +16,7 @@
         .tela { width: 100%; height: 100%; position: absolute; top: 0; left: 0; display: none; }
         .ativa { display: block; }
 
+        /* 1️⃣ TELA: RECEBENDO CHAMADA */
         #recebendo { 
             background: url('calling.png') center/cover no-repeat, linear-gradient(180deg, #102a45 0%, #050e18 100%); 
         }
@@ -33,15 +34,18 @@
             animation: pulsar 1.5s infinite; -webkit-tap-highlight-color: transparent;
         }
 
+        /* 2️⃣ TELA: EM ANDAMENTO */
         #andamento { 
             background: url('andamento.png') center/cover no-repeat, linear-gradient(180deg, #091724 0%, #03080f 100%); 
         }
         
+        /* Ajustado em 30% do topo */
         .cronometro { 
             position: absolute; top: 42%; left: 0; width: 100%; text-align: center;
             color: white; font-size: 22px; font-variant-numeric: tabular-nums; font-weight: bold;
         }
 
+        /* Ajustado em 38% do topo */
         .status-dinamico { 
             position: absolute; top: 45%; left: 0; width: 100%; text-align: center;
             color: #ff4d4d; font-size: 18px; font-weight: bold; letter-spacing: 1px; padding: 0 10px; line-height: 1.3;
@@ -52,11 +56,6 @@
             width: 75px; height: 75px; background: #f44336; border: none; border-radius: 50%;
             color: white; font-size: 32px; cursor: pointer; display: flex; justify-content: center; align-items: center;
             -webkit-tap-highlight-color: transparent;
-        }
-
-        #encerrada { 
-            background: #050e18; width: 100%; height: 100%;
-            display: flex; justify-content: center; align-items: center; 
         }
     </style>
 </head>
@@ -76,63 +75,82 @@
         <button class="btn-desligar" onclick="desligarChamada()">❌</button>
     </div>
 
-    <!-- TELA 3 -->
-    <div id="encerrada" class="tela">
-        <div class="status-dinamico" style="position: static;">CHAMADA FINALIZADA</div>
-    </div>
-
 </div>
 
 <script>
-    let timerIntervalo;
-    let segundosTotais = 0;
+    // Variáveis Globais de Controle de Tempo Isoladas
+    let relogioEspera;
+    let relogioLigacao;
+    let tempoEspera = 0;
+    let tempoLigacao = 0;
+
+    // Inicializa a contagem limite de 7 segundos ao abrir a página
+    relogioEspera = setInterval(function() {
+        tempoEspera++;
+        if (tempoEspera >= 7) {
+            clearInterval(relogioEspera);
+            executarCorteAutomatico();
+        }
+    }, 1000);
 
     function atenderChamada() {
+        // [Ação Crítica] Para imediatamente o relógio de espera e limpa a variável anterior
+        clearInterval(relogioEspera);
+
         const elementoCelular = document.getElementById('aparelho');
         if (elementoCelular.requestFullscreen) { elementoCelular.requestFullscreen(); }
         else if (elementoCelular.webkitRequestFullscreen) { elementoCelular.webkitRequestFullscreen(); }
 
         mudarTela('andamento');
 
-        timerIntervalo = setInterval(function() {
-            segundosTotais++;
+        // Inicializa uma contagem completamente nova e do zero para a ligação
+        relogioLigacao = setInterval(function() {
+            tempoLigacao++;
             
-            let min = Math.floor(segundosTotais / 60);
-            let seg = segundosTotais % 60;
+            let min = Math.floor(tempoLigacao / 60);
+            let seg = tempoLigacao % 60;
             let textoMin = min < 10 ? "0" + min : min;
             let textoSeg = seg < 10 ? "0" + seg : seg;
             document.getElementById('tempo').innerText = textoMin + ":" + textoSeg;
 
-            if (segundosTotais === 15) {
+            if (tempoLigacao === 15) {
                 document.getElementById('statusTexto').innerText = "ENCERRANDO CHAMADA...";
             }
 
-            if (segundosTotais === 18) {
+            if (tempoLigacao === 18) {
                 document.getElementById('statusTexto').innerText = "CHAMADA ENCERRADA";
             }
 
-            if (segundosTotais >= 21) {
-                clearInterval(timerIntervalo);
-                
-                // Desativa a tela cheia apenas no final de tudo para evitar travar o Android
-                if (document.exitFullscreen) { document.exitFullscreen(); }
-                else if (document.webkitExitFullscreen) { document.webkitExitFullscreen(); }
-                
-                window.location.href = "https://google.com";
+            if (tempoLigacao >= 21) {
+                clearInterval(relogioLigacao);
+                finalizarNavegador();
             }
         }, 1000);
     }
 
     function desligarChamada() {
-        clearInterval(timerIntervalo);
+        clearInterval(relogioLigacao);
         document.getElementById('statusTexto').innerText = "CHAMADA ENCERRADA";
-        
+        setTimeout(function() {
+            finalizarNavegador();
+        }, 2000);
+    }
+
+    function executarCorteAutomatico() {
+        mudarTela('andamento');
+        document.getElementById('statusTexto').innerText = "ENCERRANDO CHAMADA...";
+        setTimeout(function() {
+            document.getElementById('statusTexto').innerText = "CHAMADA ENCERRADA";
+            setTimeout(function() {
+                finalizarNavegador();
+            }, 2500);
+        }, 2500);
+    }
+
+    function finalizarNavegador() {
         if (document.exitFullscreen) { document.exitFullscreen(); }
         else if (document.webkitExitFullscreen) { document.webkitExitFullscreen(); }
-        
-        setTimeout(function() {
-            window.location.href = "https://google.com";
-        }, 2000);
+        window.location.href = "https://google.com";
     }
 
     function mudarTela(idTela) {
