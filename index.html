@@ -8,7 +8,6 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
         body { background: #111; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; }
         
-        /* Moldura do Aparelho */
         .celular {
             width: 360px; height: 740px; background: #000; border: 12px solid #333;
             border-radius: 40px; overflow: hidden; position: relative; box-shadow: 0 20px 40px rgba(0,0,0,0.8);
@@ -28,7 +27,6 @@
             100% { transform: translate(-50%) scale(1); filter: drop-shadow(0 0 0 rgba(76, 175, 80, 0)); }
         }
         
-        /* Botão Verde PNG */
         .btn-atender-png {
             position: absolute; bottom: 12%; left: 50%; transform: translateX(-50%);
             width: 22%; aspect-ratio: 1 / 1; background: none; border: none; cursor: pointer;
@@ -41,13 +39,11 @@
             background: url('andamento.png') center/cover no-repeat, linear-gradient(180deg, #091724 0%, #03080f 100%); 
         }
         
-        /* Cronômetro posicionado */
         .cronometro { 
             position: absolute; top: 38.5%; left: 0; width: 100%; text-align: center;
             color: rgba(255,255,255,0.6); font-size: 15px; font-variant-numeric: tabular-nums; 
         }
 
-        /* Botão Vermelho PNG */
         .btn-desligar-png {
             position: absolute; bottom: 12%; left: 50%; transform: translateX(-50%);
             width: 22%; aspect-ratio: 1 / 1; background: none; border: none; cursor: pointer;
@@ -64,32 +60,29 @@
     </style>
 </head>
 <body>
-
 <div class="celular" id="aparelho">
-    
-    <!-- 1️⃣ TELA: RECEBENDO CHAMADA -->
+        <!-- TELA 1 -->
     <div id="recebendo" class="tela ativa">
         <button class="btn-atender-png" onclick="atender()">
-            <img src="verde.png" alt="Atender" onerror="this.style.display='none'; this.parentNode.innerText='📞'; this.parentNode.style.background='#4caf50'; this.parentNode.style.borderRadius='50%';">
+            <img src="verde.png" alt="Atender">
         </button>
     </div>
 
-    <!-- 2️⃣ TELA: EM ANDAMENTO -->
+    <!-- TELA 2 -->
     <div id="andamento" class="tela">
         <div id="tempo" class="cronometro">00:00</div>
         <button class="btn-desligar-png" onclick="desligar()">
-            <img src="vermelho.png" alt="Desligar" onerror="this.style.display='none'; this.parentNode.innerText='❌'; this.parentNode.style.background='#f44336'; this.parentNode.style.borderRadius='50%';">
+            <img src="vermelho.png" alt="Desligar">
         </button>
     </div>
 
-    <!-- 3️⃣ TELA: ENCERRADA -->
+    <!-- TELA 3 -->
     <div id="encerrada" class="tela">
-        <div class="texto-encerrado">CHAMADA ENCERRADA</div>
+        <div class="texto-encerrado">CHAMADA FINALIZADA</div>
     </div>
 
 </div>
 
-<!-- Player de Áudio Puro e Isolado -->
 <audio id="audioSuspeito" src="audio.mp3" preload="auto"></audio>
 
 <script>
@@ -104,14 +97,10 @@
 
         mudar('andamento');
 
-        // Blindagem técnica: Tenta dar o play, mas ignora completamente se o arquivo der erro
         try {
-            som.play().catch(function(e) { console.log("Áudio rodando nativo."); });
-        } catch(err) {
-            console.log("Erro de codec ignorado.");
-        }
+            som.play().catch(function(e) { console.log("Áudio iniciado."); });
+        } catch(err) {}
 
-        // O relógio passa a comandar o fluxo sem depender de respostas do player de áudio
         crono = setInterval(function() {
             contaSegundos++;
             let m = Math.floor(contaSegundos / 60);
@@ -120,7 +109,6 @@
             let txtS = s < 10 ? "0" + s : s;
             document.getElementById('tempo').innerText = txtM + ":" + txtS;
 
-            // Derruba a ligação de forma forçada e exata no segundo 14
             if (contaSegundos >= 14) {
                 desligar();
             }
@@ -135,8 +123,6 @@
         setTimeout(function() {
             if (document.exitFullscreen) { document.exitFullscreen(); }
             else if (document.webkitExitFullscreen) { document.webkitExitFullscreen(); }
-            
-            // Saída definitiva para a página do Google
             window.location.href = "https://google.com";
         }, 2500);
     }
@@ -147,6 +133,6 @@
         document.getElementById(id).classList.add('ativa');
     }
 </script>
-
 </body>
 </html>
+
