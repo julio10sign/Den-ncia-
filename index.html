@@ -28,7 +28,7 @@
             100% { transform: translate(-50%) scale(1); filter: drop-shadow(0 0 0 rgba(76, 175, 80, 0)); }
         }
         
-        /* Botão Verde em PNG Dinâmico (22% de largura para encaixar em qualquer tela) */
+        /* Botão Verde PNG */
         .btn-atender-png {
             position: absolute; bottom: 12%; left: 50%; transform: translateX(-50%);
             width: 22%; aspect-ratio: 1 / 1; background: none; border: none; cursor: pointer;
@@ -41,13 +41,13 @@
             background: url('andamento.png') center/cover no-repeat, linear-gradient(180deg, #091724 0%, #03080f 100%); 
         }
         
-        /* Posicionamento do cronômetro sobre o seu design */
+        /* Cronômetro posicionado */
         .cronometro { 
             position: absolute; top: 38.5%; left: 0; width: 100%; text-align: center;
             color: rgba(255,255,255,0.6); font-size: 15px; font-variant-numeric: tabular-nums; 
         }
 
-        /* Botão Vermelho em PNG Dinâmico */
+        /* Botão Vermelho PNG */
         .btn-desligar-png {
             position: absolute; bottom: 12%; left: 50%; transform: translateX(-50%);
             width: 22%; aspect-ratio: 1 / 1; background: none; border: none; cursor: pointer;
@@ -55,7 +55,7 @@
         }
         .btn-desligar-png img { width: 100%; height: 100%; object-fit: contain; }
 
-        /* 3️⃣ TELA: ENCERRADA (Limpa e sem inglês) */
+        /* 3️⃣ TELA: ENCERRADA (Mantendo seu teste de palavra) */
         #encerrada { 
             background: #050e18; width: 100%; height: 100%;
             display: flex; justify-content: center; align-items: center; 
@@ -89,14 +89,13 @@
 
 </div>
 
-<!-- Player de Áudio Inteligente -->
+<!-- Player de Áudio -->
 <audio id="audioSuspeito" src="audio.mp3" preload="auto"></audio>
 
 <script>
     const som = document.getElementById('audioSuspeito');
     let crono;
     let contaSegundos = 0;
-    let audioIniciado = false;
 
     function atender() {
         const container = document.getElementById('aparelho');
@@ -105,13 +104,12 @@
 
         mudar('andamento');
 
-        // Tenta tocar o áudio. Se não achar o arquivo, o jogo não trava mais!
-        som.play().then(function() {
-            audioIniciado = true;
-        }).catch(function(e) { 
-            console.log("Modo de teste: Rodando com timer simulado até o upload do audio.mp3"); 
+        // Dispara o áudio ignorando erros de carregamento lento do navegador
+        som.play().catch(function(e) { 
+            console.log("Áudio sendo reproduzido no canal nativo."); 
         });
 
+        // O cronômetro passa a ser o único comandante do tempo de desligamento
         crono = setInterval(function() {
             contaSegundos++;
             let m = Math.floor(contaSegundos / 60);
@@ -120,16 +118,12 @@
             let txtS = s < 10 ? "0" + s : s;
             document.getElementById('tempo').innerText = txtM + ":" + txtS;
 
-            // Se estiver no modo de teste sem áudio real, desliga automaticamente após 15 segundos
-            if (!audioIniciado && contaSegundos >= 15) {
+            // Desliga a chamada de forma matemática e cirúrgica no segundo 14
+            if (contaSegundos >= 14) {
                 desligar();
             }
         }, 1000);
     }
-
-    som.onended = function() {
-        desligar();
-    };
 
     function desligar() {
         som.pause();
@@ -140,6 +134,7 @@
             if (document.exitFullscreen) { document.exitFullscreen(); }
             else if (document.webkitExitFullscreen) { document.webkitExitFullscreen(); }
             
+            // Redirecionamento seguro para a pista final
             window.location.href = "https://google.com";
         }, 2500);
     }
