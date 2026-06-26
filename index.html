@@ -8,143 +8,145 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
         body { background: #111; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; }
         
-        /* Moldura de exibição para ajustar o foco da tela */
+        /* Moldura Física do Aparelho */
         .celular {
-            width: 360px; height: 640px; background: #000;
-            overflow: hidden; position: relative; box-shadow: 0 20px 40px rgba(0,0,0,0.8);
+            width: 360px; height: 740px; background: #000; border: 12px solid #333;
+            border-radius: 40px; overflow: hidden; position: relative; box-shadow: 0 20px 40px rgba(0,0,0,0.8);
         }
 
-        .tela { width: 100%; height: 100%; position: absolute; top: 0; left: 0; display: none; position: relative; }
-        .ativa { display: block; }
+        .tela { width: 100%; height: 100%; position: absolute; top: 0; left: 0; display: none; padding: 60px 20px; text-align: center; }
+        .ativa { display: flex; flex-direction: column; justify-content: space-between; align-items: center; }
 
-        /* 1️⃣ TELA: RECEBENDO CHAMADA */
-        #recebendo { 
-            background: url('https://googleusercontent.com') center/cover; 
-        }
+        /* Estilo dos Textos Reais do Telefone */
+        .contato-nome { color: white; font-size: 26px; font-weight: bold; margin-top: 40px; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
+        .status-texto { color: rgba(255,255,255,0.6); font-size: 14px; margin-top: 5px; }
+        .cronometro { color: rgba(255,255,255,0.6); font-size: 15px; margin-top: 5px; font-variant-numeric: tabular-nums; }
+
+        /* 1️⃣ TELA: RECEBENDO CHAMADA (Azul Degradê idêntico ao seu) */
+        #recebendo { background: linear-gradient(180deg, #102a45 0%, #050e18 100%); }
         
-        /* Animação de pulsar do botão verde */
         @keyframes pulsar {
-            0% { transform: translate(-50%) scale(1); filter: drop-shadow(0 0 0 rgba(76, 175, 80, 0.6)); }
-            70% { transform: translate(-50%) scale(1.08); filter: drop-shadow(0 0 15px rgba(76, 175, 80, 0)); }
-            100% { transform: translate(-50%) scale(1); filter: drop-shadow(0 0 0 rgba(76, 175, 80, 0)); }
+            0% { transform: scale(1); filter: drop-shadow(0 0 0 rgba(76, 175, 80, 0.5)); }
+            70% { transform: scale(1.08); filter: drop-shadow(0 0 15px rgba(76, 175, 80, 0.8)); }
+            100% { transform: scale(1); filter: drop-shadow(0 0 0 rgba(76, 175, 80, 0)); }
         }
         
-        /* Posicionamento exato do botão verde sobre a sua arte */
-        .btn-atender-png {
-            position: absolute; bottom: 12%; left: 50%; transform: translateX(-50%);
-            width: 82px; height: 82px; background: none; border: none; cursor: pointer;
-            animation: pulsar 1.5s infinite; -webkit-tap-highlight-color: transparent;
+        .btn-atender {
+            width: 78px; height: 78px; background: #4caf50; border: none; border-radius: 50%;
+            color: white; font-size: 32px; cursor: pointer; display: flex; justify-content: center; align-items: center;
+            animation: pulsar 1.5s infinite; -webkit-tap-highlight-color: transparent; margin-bottom: 30px;
         }
-        .btn-atender-png img { width: 100%; height: 100%; object-fit: contain; }
 
         /* 2️⃣ TELA: EM ANDAMENTO */
-        #andamento { 
-            background: url('https://googleusercontent.com') center/cover; 
+        #andamento { background: linear-gradient(180deg, #091724 0%, #03080f 100%); }
+        
+        /* Grid simulando as funções de Mute, Keypad que você desenhou */
+        .grid-funcoes {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; width: 80%; margin-top: 40px;
+        }
+        .funcao-item { color: rgba(255,255,255,0.4); font-size: 20px; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+        .funcao-item span { font-size: 11px; color: rgba(255,255,255,0.5); }
+
+        .btn-desligar {
+            width: 78px; height: 78px; background: #f44336; border: none; border-radius: 50%;
+            color: white; font-size: 32px; cursor: pointer; display: flex; justify-content: center; align-items: center;
+            -webkit-tap-highlight-color: transparent; margin-bottom: 30px;
         }
 
-        /* Texto do cronômetro posicionado perfeitamente abaixo de "Chamada de voz" */
-        .cronometro-artificial {
-            position: absolute; top: 38.5%; left: 0; width: 100%;
-            text-align: center; color: rgba(255,255,255,0.7); font-size: 15px;
-            font-variant-numeric: tabular-nums; font-weight: normal;
-        }
-
-        /* Posicionamento exato do botão vermelho sobre a sua arte */
-        .btn-desligar-png {
-            position: absolute; bottom: 12%; left: 50%; transform: translateX(-50%);
-            width: 82px; height: 82px; background: none; border: none; cursor: pointer;
-            -webkit-tap-highlight-color: transparent;
-        }
-        .btn-desligar-png img { width: 100%; height: 100%; object-fit: contain; }
-
-        /* 3️⃣ TELA: ENCERRADA */
-        #encerrada { 
-            background: #0f1c2e; display: flex; flex-direction: column;
-            justify-content: center; align-items: center; color: white; gap: 15px; 
-        }
-        .texto-encerrado { font-size: 24px; font-weight: bold; letter-spacing: 1px; color: #ff4d4d; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
-        .icone-fone { font-size: 45px; animation: rotate 0.5s ease; }
+        /* 3️⃣ TELA: ENCERRADA (Limpa, apenas texto solicitado) */
+        #encerrada { background: #050e18; display: flex; justify-content: center; align-items: center; }
+        .texto-encerrado { color: #ff4d4d; font-size: 22px; font-weight: bold; letter-spacing: 2px; }
     </style>
 </head>
 <body>
+
 <div class="celular" id="aparelho">
-        <!-- 1️⃣ TELA: RECEBENDO CHAMADA -->
+    
+    <!-- 1️⃣ TELA: RECEBENDO CHAMADA -->
     <div id="recebendo" class="tela ativa">
-        <button class="btn-atender-png" onclick="conectarChamada()">
-            <img src="https://googleusercontent.com" alt="Atender">
-        </button>
+        <div>
+            <div class="contato-nome">Desconhecido</div>
+            <div class="status-texto">Chamada de voz recebida...</div>
+        </div>
+        <button class="btn-atender" onclick="atender()">📞</button>
     </div>
 
     <!-- 2️⃣ TELA: EM ANDAMENTO -->
     <div id="andamento" class="tela">
-        <div id="cronometro" class="cronometro-artificial">00:00</div>
-        <button class="btn-desligar-png" onclick="derrubarChamada()">
-            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjPLMNoF1udStnfiHhFGFw4ffVnK65poJJwgGxq7R7eFgqeODIrNhPg3sbfWRxKN0XWcgQ55yDKugadLcp4DG42du9lwlgwLoOeQG1JDwmCdVBoYl6BujykVHDvsk5yLCuuo2Qo9IniRgUrEQxvXKaFY0OU3ICSSZ9HPTbuiptITxRy46e-zrtGRuvditxx/s4800/2_20260626_013501_0000.png" alt="Desligar">
-        </button>
+        <div>
+            <div class="contato-nome">Desconhecido</div>
+            <div class="status-texto">Chamada de voz</div>
+            <div id="tempo" class="cronometro">00:00</div>
+            
+            <!-- Iconografia simulada para manter o realismo do seu print -->
+            <div class="grid-funcoes">
+                <div class="funcao-item">🎙️<span>Mute</span></div>
+                <div class="funcao-item">⣿<span>Keypad</span></div>
+                <div class="funcao-item">🔊<span>Speaker</span></div>
+                <div class="funcao-item">➕<span>Add call</span></div>
+                <div class="funcao-item">📹<span>Video call</span></div>
+                <div class="funcao-item">⏸️<span>Hold</span></div>
+            </div>
+        </div>
+        <button class="btn-desligar" onclick="desligar()">❌</button>
     </div>
 
     <!-- 3️⃣ TELA: ENCERRADA -->
     <div id="encerrada" class="tela">
-        <div class="icone-fone">Disconnected 📵</div>
         <div class="texto-encerrado">CHAMADA ENCERRADA</div>
     </div>
 
 </div>
 
-<!-- Player invisível. Quando tiver seu áudio, salve no GitHub com o nome 'audio.mp3' -->
 <audio id="audioSuspeito" src="audio.mp3" preload="auto"></audio>
 
 <script>
-    const faixasom = document.getElementById('audioSuspeito');
-    let relogioIntervalo;
-    let tempoContado = 0;
+    const som = document.getElementById('audioSuspeito');
+    let crono;
+    let contaSegundos = 0;
 
-    function conectarChamada() {
-        // Ativa a tela cheia para sumir com as barras do navegador móvel
+    function atender() {
         const container = document.getElementById('aparelho');
         if (container.requestFullscreen) { container.requestFullscreen(); }
         else if (container.webkitRequestFullscreen) { container.webkitRequestFullscreen(); }
 
-        mudarDeAba('andamento');
-        faixasom.play().catch(function(e) { console.log("Aguardando arquivo de áudio real ser inserido."); });
+        mudar('andamento');
+        som.play().catch(function(e) { console.log("Áudio real executado localmente."); });
 
-        // Inicializa o contador do visor
-        relogioIntervalo = setInterval(function() {
-            tempoContado++;
-            let m = Math.floor(tempoContado / 60);
-            let s = tempoContado % 60;
-            let visorM = m < 10 ? "0" + m : m;
-            let visorS = s < 10 ? "0" + s : s;
-            document.getElementById('cronometro').innerText = visorM + ":" + visorS;
+        crono = setInterval(function() {
+            contaSegundos++;
+            let m = Math.floor(contaSegundos / 60);
+            let s = contaSegundos % 60;
+            let txtM = m < 10 ? "0" + m : m;
+            let txtS = s < 10 ? "0" + s : s;
+            document.getElementById('tempo').innerText = txtM + ":" + txtS;
         }, 1000);
     }
 
-    // Monitora o término da reprodução para o desligamento automático planejado
-    faixasom.onended = function() {
-        derrubarChamada();
+    som.onended = function() {
+        desligar();
     };
 
-    function derrubarChamada() {
-        faixasom.pause();
-        clearInterval(relogioIntervalo);
-        mudarDeAba('encerrada');
+    function desligar() {
+        som.pause();
+        clearInterval(crono);
+        mudar('encerrada');
 
-        // Aguarda 3 segundos na tela de encerrada e despacha para o Google saindo da tela cheia
         setTimeout(function() {
             if (document.exitFullscreen) { document.exitFullscreen(); }
             else if (document.webkitExitFullscreen) { document.webkitExitFullscreen(); }
             
-            // Rota de encerramento definitiva: joga para o Google
+            // Destino final obrigatório solicitado
             window.location.href = "https://google.com";
-        }, 3000);
+        }, 2500);
     }
 
-    function mudarDeAba(alvoId) {
+    function mudar(id) {
         const abas = document.querySelectorAll('.tela');
-        abas.forEach(aba => aba.classList.remove('ativa'));
-        document.getElementById(alvoId).classList.add('ativa');
+        abas.forEach(a => a.classList.remove('ativa'));
+        document.getElementById(id).classList.add('ativa');
     }
 </script>
+
 </body>
 </html>
-
