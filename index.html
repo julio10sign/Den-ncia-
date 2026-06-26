@@ -8,7 +8,6 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
         body { background: #111; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; }
         
-        /* Moldura Estável do Aparelho */
         .celular {
             width: 360px; height: 740px; background: #000; border: 12px solid #333;
             border-radius: 40px; overflow: hidden; position: relative; box-shadow: 0 20px 40px rgba(0,0,0,0.8);
@@ -17,7 +16,7 @@
         .tela { width: 100%; height: 100%; position: absolute; top: 0; left: 0; display: none; }
         .ativa { display: block; }
 
-        /* 1️⃣ TELA: RECEBENDO CHAMADA (Sua Arte do Canva) */
+        /* 1️⃣ TELA: RECEBENDO CHAMADA */
         #recebendo { 
             background: url('calling.png') center/cover no-repeat, linear-gradient(180deg, #102a45 0%, #050e18 100%); 
         }
@@ -28,7 +27,6 @@
             100% { transform: translate(-50%) scale(1); box-shadow: 0 0 0 0 rgba(76, 175, 80, 0); }
         }
         
-        /* Botão gerado por código: idêntico ao teste que deu certo */
         .btn-atender-estavel {
             position: absolute; bottom: 12%; left: 50%; transform: translateX(-50%);
             width: 75px; height: 75px; background: #4caf50; border: none; border-radius: 50%;
@@ -36,7 +34,7 @@
             animation: pulsar 1.5s infinite; -webkit-tap-highlight-color: transparent;
         }
 
-        /* 2️⃣ TELA: EM ANDAMENTO (Sua Arte do Canva) */
+        /* 2️⃣ TELA: EM ANDAMENTO */
         #andamento { 
             background: url('andamento.png') center/cover no-repeat, linear-gradient(180deg, #091724 0%, #03080f 100%); 
         }
@@ -46,7 +44,6 @@
             color: rgba(255,255,255,0.6); font-size: 15px; font-variant-numeric: tabular-nums; 
         }
 
-        /* Botão de desligar gerado por código */
         .btn-desligar-estavel {
             position: absolute; bottom: 12%; left: 50%; transform: translateX(-50%);
             width: 75px; height: 75px; background: #f44336; border: none; border-radius: 50%;
@@ -82,10 +79,8 @@
 
 </div>
 
-<audio id="audioSuspeito" src="audio.mp3" preload="auto"></audio>
-
 <script>
-    const som = document.getElementById('audioSuspeito');
+    let som = null; // Áudio começa totalmente nulo (inexistente) para não bugar o início
     let crono;
     let contaSegundos = 0;
 
@@ -96,12 +91,15 @@
 
         mudar('andamento');
 
-        // Toca o áudio de fundo sem deixar o erro travar a tela
+        // Cria e ativa o áudio dinamicamente APÓS o clique humano
         try {
-            som.play().catch(function(e) { console.log("Áudio rodando."); });
-        } catch(err) {}
+            som = new Audio('audio.mp3');
+            som.play().catch(function(e) { console.log("Canal de áudio protegido."); });
+        } catch(err) {
+            console.log("Modo de segurança ativado.");
+        }
 
-        // O cronômetro assume o controle absoluto da contagem de 14 segundos
+        // Cronômetro isolado assume a contagem de 14 segundos
         crono = setInterval(function() {
             contaSegundos++;
             let m = Math.floor(contaSegundos / 60);
@@ -117,7 +115,10 @@
     }
 
     function desligar() {
-        try { som.pause(); } catch(e){}
+        // Desliga o áudio apenas se ele tiver sido criado
+        if (som) {
+            try { som.pause(); } catch(e){}
+        }
         clearInterval(crono);
         mudar('encerrada');
 
