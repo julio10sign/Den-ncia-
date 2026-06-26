@@ -8,54 +8,59 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
         body { background: #111; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; }
         
-        /* Moldura Física do Aparelho */
+        /* Moldura do Aparelho */
         .celular {
             width: 360px; height: 740px; background: #000; border: 12px solid #333;
             border-radius: 40px; overflow: hidden; position: relative; box-shadow: 0 20px 40px rgba(0,0,0,0.8);
         }
 
-        .tela { width: 100%; height: 100%; position: absolute; top: 0; left: 0; display: none; padding: 60px 20px; text-align: center; }
-        .ativa { display: flex; flex-direction: column; justify-content: space-between; align-items: center; }
+        .tela { width: 100%; height: 100%; position: absolute; top: 0; left: 0; display: none; }
+        .ativa { display: block; }
 
-        /* Estilo dos Textos Reais do Telefone */
-        .contato-nome { color: white; font-size: 26px; font-weight: bold; margin-top: 40px; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
-        .status-texto { color: rgba(255,255,255,0.6); font-size: 14px; margin-top: 5px; }
-        .cronometro { color: rgba(255,255,255,0.6); font-size: 15px; margin-top: 5px; font-variant-numeric: tabular-nums; }
-
-        /* 1️⃣ TELA: RECEBENDO CHAMADA (Azul Degradê idêntico ao seu) */
-        #recebendo { background: linear-gradient(180deg, #102a45 0%, #050e18 100%); }
+        /* 1️⃣ TELA: RECEBENDO CHAMADA (Sua Arte do Canva) */
+        #recebendo { 
+            background: url('calling.png') center/cover no-repeat, linear-gradient(180deg, #102a45 0%, #050e18 100%); 
+        }
         
         @keyframes pulsar {
-            0% { transform: scale(1); filter: drop-shadow(0 0 0 rgba(76, 175, 80, 0.5)); }
-            70% { transform: scale(1.08); filter: drop-shadow(0 0 15px rgba(76, 175, 80, 0.8)); }
-            100% { transform: scale(1); filter: drop-shadow(0 0 0 rgba(76, 175, 80, 0)); }
+            0% { transform: translate(-50%) scale(1); filter: drop-shadow(0 0 0 rgba(76, 175, 80, 0.4)); }
+            70% { transform: translate(-50%) scale(1.06); filter: drop-shadow(0 0 15px rgba(76, 175, 80, 0.6)); }
+            100% { transform: translate(-50%) scale(1); filter: drop-shadow(0 0 0 rgba(76, 175, 80, 0)); }
         }
         
-        .btn-atender {
-            width: 78px; height: 78px; background: #4caf50; border: none; border-radius: 50%;
-            color: white; font-size: 32px; cursor: pointer; display: flex; justify-content: center; align-items: center;
-            animation: pulsar 1.5s infinite; -webkit-tap-highlight-color: transparent; margin-bottom: 30px;
+        /* Botão Verde em PNG Dinâmico (22% de largura para encaixar em qualquer tela) */
+        .btn-atender-png {
+            position: absolute; bottom: 12%; left: 50%; transform: translateX(-50%);
+            width: 22%; aspect-ratio: 1 / 1; background: none; border: none; cursor: pointer;
+            animation: pulsar 1.5s infinite; -webkit-tap-highlight-color: transparent;
         }
+        .btn-atender-png img { width: 100%; height: 100%; object-fit: contain; }
 
-        /* 2️⃣ TELA: EM ANDAMENTO */
-        #andamento { background: linear-gradient(180deg, #091724 0%, #03080f 100%); }
+        /* 2️⃣ TELA: EM ANDAMENTO (Sua Arte do Canva) */
+        #andamento { 
+            background: url('andamento.png') center/cover no-repeat, linear-gradient(180deg, #091724 0%, #03080f 100%); 
+        }
         
-        /* Grid simulando as funções de Mute, Keypad que você desenhou */
-        .grid-funcoes {
-            display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; width: 80%; margin-top: 40px;
-        }
-        .funcao-item { color: rgba(255,255,255,0.4); font-size: 20px; display: flex; flex-direction: column; align-items: center; gap: 8px; }
-        .funcao-item span { font-size: 11px; color: rgba(255,255,255,0.5); }
-
-        .btn-desligar {
-            width: 78px; height: 78px; background: #f44336; border: none; border-radius: 50%;
-            color: white; font-size: 32px; cursor: pointer; display: flex; justify-content: center; align-items: center;
-            -webkit-tap-highlight-color: transparent; margin-bottom: 30px;
+        /* Posicionamento do cronômetro sobre o seu design */
+        .cronometro { 
+            position: absolute; top: 38.5%; left: 0; width: 100%; text-align: center;
+            color: rgba(255,255,255,0.6); font-size: 15px; font-variant-numeric: tabular-nums; 
         }
 
-        /* 3️⃣ TELA: ENCERRADA (Limpa, apenas texto solicitado) */
-        #encerrada { background: #050e18; display: flex; justify-content: center; align-items: center; }
-        .texto-encerrado { color: #ff4d4d; font-size: 22px; font-weight: bold; letter-spacing: 2px; }
+        /* Botão Vermelho em PNG Dinâmico */
+        .btn-desligar-png {
+            position: absolute; bottom: 12%; left: 50%; transform: translateX(-50%);
+            width: 22%; aspect-ratio: 1 / 1; background: none; border: none; cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .btn-desligar-png img { width: 100%; height: 100%; object-fit: contain; }
+
+        /* 3️⃣ TELA: ENCERRADA (Limpa e sem inglês) */
+        #encerrada { 
+            background: #050e18; width: 100%; height: 100%;
+            display: flex; justify-content: center; align-items: center; 
+        }
+        .texto-encerrado { color: #ff4d4d; font-size: 22px; font-weight: bold; letter-spacing: 2px; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
     </style>
 </head>
 <body>
@@ -64,31 +69,17 @@
     
     <!-- 1️⃣ TELA: RECEBENDO CHAMADA -->
     <div id="recebendo" class="tela ativa">
-        <div>
-            <div class="contato-nome">Desconhecido</div>
-            <div class="status-texto">Chamada de voz recebida...</div>
-        </div>
-        <button class="btn-atender" onclick="atender()">📞</button>
+        <button class="btn-atender-png" onclick="atender()">
+            <img src="verde.png" alt="Atender" onerror="this.style.display='none'; this.parentNode.innerText='📞'; this.parentNode.style.background='#4caf50'; this.parentNode.style.borderRadius='50%';">
+        </button>
     </div>
 
     <!-- 2️⃣ TELA: EM ANDAMENTO -->
     <div id="andamento" class="tela">
-        <div>
-            <div class="contato-nome">Desconhecido</div>
-            <div class="status-texto">Chamada de voz</div>
-            <div id="tempo" class="cronometro">00:00</div>
-            
-            <!-- Iconografia simulada para manter o realismo do seu print -->
-            <div class="grid-funcoes">
-                <div class="funcao-item">🎙️<span>Mute</span></div>
-                <div class="funcao-item">⣿<span>Keypad</span></div>
-                <div class="funcao-item">🔊<span>Speaker</span></div>
-                <div class="funcao-item">➕<span>Add call</span></div>
-                <div class="funcao-item">📹<span>Video call</span></div>
-                <div class="funcao-item">⏸️<span>Hold</span></div>
-            </div>
-        </div>
-        <button class="btn-desligar" onclick="desligar()">❌</button>
+        <div id="tempo" class="cronometro">00:00</div>
+        <button class="btn-desligar-png" onclick="desligar()">
+            <img src="vermelho.png" alt="Desligar" onerror="this.style.display='none'; this.parentNode.innerText='❌'; this.parentNode.style.background='#f44336'; this.parentNode.style.borderRadius='50%';">
+        </button>
     </div>
 
     <!-- 3️⃣ TELA: ENCERRADA -->
@@ -98,12 +89,14 @@
 
 </div>
 
+<!-- Player de Áudio Inteligente -->
 <audio id="audioSuspeito" src="audio.mp3" preload="auto"></audio>
 
 <script>
     const som = document.getElementById('audioSuspeito');
     let crono;
     let contaSegundos = 0;
+    let audioIniciado = false;
 
     function atender() {
         const container = document.getElementById('aparelho');
@@ -111,7 +104,13 @@
         else if (container.webkitRequestFullscreen) { container.webkitRequestFullscreen(); }
 
         mudar('andamento');
-        som.play().catch(function(e) { console.log("Áudio real executado localmente."); });
+
+        // Tenta tocar o áudio. Se não achar o arquivo, o jogo não trava mais!
+        som.play().then(function() {
+            audioIniciado = true;
+        }).catch(function(e) { 
+            console.log("Modo de teste: Rodando com timer simulado até o upload do audio.mp3"); 
+        });
 
         crono = setInterval(function() {
             contaSegundos++;
@@ -120,6 +119,11 @@
             let txtM = m < 10 ? "0" + m : m;
             let txtS = s < 10 ? "0" + s : s;
             document.getElementById('tempo').innerText = txtM + ":" + txtS;
+
+            // Se estiver no modo de teste sem áudio real, desliga automaticamente após 15 segundos
+            if (!audioIniciado && contaSegundos >= 15) {
+                desligar();
+            }
         }, 1000);
     }
 
@@ -136,7 +140,6 @@
             if (document.exitFullscreen) { document.exitFullscreen(); }
             else if (document.webkitExitFullscreen) { document.webkitExitFullscreen(); }
             
-            // Destino final obrigatório solicitado
             window.location.href = "https://google.com";
         }, 2500);
     }
