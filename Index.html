@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador de Chamada</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
+        body { background: #111; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; }
+        
+        /* Moldura do Telefone Virtual */
+        .celular {
+            width: 360px; height: 680px; background: #000; border: 12px solid #333;
+            border-radius: 40px; overflow: hidden; position: relative; box-shadow: 0 20px 40px rgba(0,0,0,0.8);
+        }
+
+        .tela { width: 100%; height: 100%; position: absolute; top: 0; left: 0; display: none; flex-direction: column; align-items: center; justify-content: space-between; padding: 60px 20px; }
+        .ativa { display: flex; }
+
+        /* Estilos de Texto e Interface */
+        .contato-nome { color: white; font-size: 28px; font-weight: bold; margin-bottom: 5px; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
+        .status-chamada { color: rgba(255,255,255,0.7); font-size: 16px; }
+        .cronometro { color: white; font-size: 20px; font-variant-numeric: tabular-nums; margin-top: 10px; }
+
+        /* 1️⃣ TELA: RECEBENDO CHAMADA (Fundo Roxo/Azul) */
+        #recebendo { background: linear-gradient(180deg, #1f4068, #162447); }
+        
+        /* Animação de Pulsar para o Botão Verde */
+        @keyframes pulsar {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.7); }
+            70% { transform: scale(1.1); box-shadow: 0 0 0 15px rgba(76, 175, 80, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(76, 175, 80, 0); }
+        }
+        .btn-atender {
+            width: 75px; height: 75px; background: #4caf50; border: none; border-radius: 50%;
+            color: white; font-size: 32px; cursor: pointer; display: flex; justify-content: center; align-items: center;
+            animation: pulsar 1.5s infinite; -webkit-tap-highlight-color: transparent;
+        }
+
+        /* 2️⃣ TELA: EM ANDAMENTO (Fundo Escuro) */
+        #andamento { background: #121212; }
+        .info-grupo { text-align: center; }
+        .btn-desligar {
+            width: 75px; height: 75px; background: #f44336; border: none; border-radius: 50%;
+            color: white; font-size: 32px; cursor: pointer; display: flex; justify-content: center; align-items: center;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* 3️⃣ TELA: ENCERRADA (Fundo Vermelho Escuro sutil) */
+        #encerrada { background: #2c1a1a; justify-content: center; gap: 20px; }
+        .icone-aviso { font-size: 50px; }
+    </style>
+</head>
+<body>
+
+<div class="celular" id="aparelho">
+    
+    <!-- 1️⃣ TELA: RECEBENDO CHAMADA -->
+    <div id="recebendo" class="tela ativa">
+        <div style="text-align: center;">
+            <div class="contato-nome">Número Desconhecido</div>
+            <div class="status-chamada">Chamada de voz recebida...</div>
+        </div>
+        <!-- Botão virtual que pisca (Substituiremos pelo seu PNG no futuro) -->
+        <button class="btn-atender" onclick="atenderChamada()">📞</button>
+    </div>
+
+    <!-- 2️⃣ TELA: EM ANDAMENTO -->
+    <div id="andamento" class="tela">
+        <div class="info-grupo">
+            <div class="contato-nome">Número Desconhecido</div>
+            <div class="status-chamada">Chamada em andamento</div>
+            <div id="tempo" class="cronometro">00:00</div>
+        </div>
+        <!-- Botão virtual de encerrar -->
+        <button class="btn-desligar" onclick="desligarChamada()">❌</button>
+    </div>
+
+    <!-- 3️⃣ TELA: ENCERRADA -->
+    <div id="encerrada" class="tela">
+        <div class="icone-aviso">📵</div>
+        <div class="contato-nome">Chamada Encerrada</div>
+    </div>
+
+</div>
+
+<!-- Áudio de Teste Público da Internet (5 segundos) -->
+<audio id="playerAudio" src="https://google.com" preload="auto"></audio>
+
+<script>
+    const audio = document.getElementById('playerAudio');
+    let timerIntervalo;
+    let segundosTotais = 0;
+
+    function atenderChamada() {
+        // 1. Aciona o Modo Tela Cheia no aparelho (Suma a barra do navegador)
+        const elementoCelular = document.getElementById('aparelho');
+        if (elementoCelular.requestFullscreen) { elementoCelular.requestFullscreen(); }
+        else if (elementoCelular.webkitRequestFullscreen) { elementoCelular.webkitRequestFullscreen(); }
+
+        // 2. Troca de Tela
+        mudarTela('andamento');
+
+        // 3. Dá o Play no Áudio
+        audio.play();
+
+        // 4. Inicia o Cronômetro Artificial do jogo
+        timerIntervalo = setInterval(function() {
+            segundosTotais++;
+            let min = Math.floor(segundosTotais / 60);
+            let seg = segundosTotais % 60;
+            
+            // Formata o texto para ficar sempre com dois dígitos (ex: 01:05)
+            let textoMin = min < 10 ? "0" + min : min;
+            let textoSeg = seg < 10 ? "0" + seg : seg;
+            
+            document.getElementById('tempo').innerText = textoMin + ":" + textoSeg;
+        }, 1000);
+    }
+
+    // Monitora o áudio. No exato segundo que ele acabar, o código desliga sozinho
+    audio.onended = function() {
+        desligarChamada();
+    };
+
+    function desligarChamada() {
+        // Interrompe o áudio e o cronômetro
+        audio.pause();
+        clearInterval(timerIntervalo);
+        
+        // Vai para a tela de encerramento
+        mudarTela('encerrada');
+
+        // Sai do modo tela cheia após 3 segundos e resgata as configurações normais
+        setTimeout(function() {
+            if (document.exitFullscreen) { document.exitFullscreen(); }
+            else if (document.webkitExitFullscreen) { document.webkitExitFullscreen(); }
+            
+            // Reseta o protótipo para o estado inicial para novos testes
+            mudarTela('recebendo');
+            segundosTotais = 0;
+            document.getElementById('tempo').innerText = "00:00";
+        }, 300);
+    }
+
+    function mudarTela(idTela) {
+        const telas = document.querySelectorAll('.tela');
+        telas.forEach(tela => tela.classList.remove('ativa'));
+        document.getElementById(idTela).classList.add('ativa');
+    }
+</script>
+
+</body>
+</html>
