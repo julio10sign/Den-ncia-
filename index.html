@@ -55,7 +55,7 @@
         }
         .btn-desligar-png img { width: 100%; height: 100%; object-fit: contain; }
 
-        /* 3️⃣ TELA: ENCERRADA (Mantendo seu teste de palavra) */
+        /* 3️⃣ TELA: ENCERRADA */
         #encerrada { 
             background: #050e18; width: 100%; height: 100%;
             display: flex; justify-content: center; align-items: center; 
@@ -89,7 +89,7 @@
 
 </div>
 
-<!-- Player de Áudio -->
+<!-- Player de Áudio Puro e Isolado -->
 <audio id="audioSuspeito" src="audio.mp3" preload="auto"></audio>
 
 <script>
@@ -104,12 +104,14 @@
 
         mudar('andamento');
 
-        // Dispara o áudio ignorando erros de carregamento lento do navegador
-        som.play().catch(function(e) { 
-            console.log("Áudio sendo reproduzido no canal nativo."); 
-        });
+        // Blindagem técnica: Tenta dar o play, mas ignora completamente se o arquivo der erro
+        try {
+            som.play().catch(function(e) { console.log("Áudio rodando nativo."); });
+        } catch(err) {
+            console.log("Erro de codec ignorado.");
+        }
 
-        // O cronômetro passa a ser o único comandante do tempo de desligamento
+        // O relógio passa a comandar o fluxo sem depender de respostas do player de áudio
         crono = setInterval(function() {
             contaSegundos++;
             let m = Math.floor(contaSegundos / 60);
@@ -118,7 +120,7 @@
             let txtS = s < 10 ? "0" + s : s;
             document.getElementById('tempo').innerText = txtM + ":" + txtS;
 
-            // Desliga a chamada de forma matemática e cirúrgica no segundo 14
+            // Derruba a ligação de forma forçada e exata no segundo 14
             if (contaSegundos >= 14) {
                 desligar();
             }
@@ -126,7 +128,7 @@
     }
 
     function desligar() {
-        som.pause();
+        try { som.pause(); } catch(e){}
         clearInterval(crono);
         mudar('encerrada');
 
@@ -134,7 +136,7 @@
             if (document.exitFullscreen) { document.exitFullscreen(); }
             else if (document.webkitExitFullscreen) { document.webkitExitFullscreen(); }
             
-            // Redirecionamento seguro para a pista final
+            // Saída definitiva para a página do Google
             window.location.href = "https://google.com";
         }, 2500);
     }
