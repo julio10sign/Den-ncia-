@@ -27,12 +27,17 @@
 <div class="celular" id="aparelho">
     <div id="recebendo" class="tela ativa"><button class="btn-atender" onclick="atenderChamada()">📞</button></div>
     <div id="andamento" class="tela"><div id="tempo" class="cronometro">00:00</div><div id="statusTexto" class="status-dinamico"></div><button class="btn-desligar" onclick="desligarChamada()">❌</button></div>
+<!-- Reprodutor de áudio nativo integrado -->
+<audio id="audioSuspeito" src="audio.mp3" preload="auto"></audio>
+
 </div>
 <script>
     let timerIntervalo;
     let segundosTotais = 0;
 
     function atenderChamada() {
+       document.getElementById('audioSuspeito').play().catch(function(e){ console.log('Aguardando toque'); });
+
         const elementoCelular = document.getElementById('aparelho');
         if (elementoCelular.requestFullscreen) { elementoCelular.requestFullscreen(); }
         else if (elementoCelular.webkitRequestFullscreen) { elementoCelular.webkitRequestFullscreen(); }
