@@ -7,89 +7,163 @@
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
         body { background: #111; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; }
-        .celular { width: 360px; height: 740px; background: #000; border: 12px solid #333; border-radius: 40px; overflow: hidden; position: relative; box-shadow: 0 20px 40px rgba(0,0,0,0.8); }
+        
+        .celular {
+            width: 360px; height: 740px; background: #000; border: 12px solid #333;
+            border-radius: 40px; overflow: hidden; position: relative; box-shadow: 0 20px 40px rgba(0,0,0,0.8);
+        }
+
         .tela { width: 100%; height: 100%; position: absolute; top: 0; left: 0; display: none; }
         .ativa { display: block; }
-        #recebendo { background: url('calling.png') center/cover no-repeat, linear-gradient(180deg, #102a45 0%, #050e18 100%); }
-        @keyframes pulsar {
-            0% { transform: translate(-50%) scale(1); box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.6); }
-            70% { transform: translate(-50%) scale(1.08); box-shadow: 0 0 0 15px rgba(76, 175, 80, 0); }
-            100% { transform: translate(-50%) scale(1); box-shadow: 0 0 0 0 rgba(76, 175, 80, 0); }
+
+        /* 1️⃣ TELA: RECEBENDO CHAMADA */
+        #recebendo { 
+            background: url('calling.png') center/cover no-repeat, linear-gradient(180deg, #102a45 0%, #050e18 100%); 
         }
-        .btn-atender { position: absolute; bottom: 12%; left: 50%; transform: translateX(-50%); width: 75px; height: 75px; background: #4caf50; border: none; border-radius: 50%; color: white; font-size: 32px; cursor: pointer; display: flex; justify-content: center; align-items: center; animation: pulsar 1.5s infinite; -webkit-tap-highlight-color: transparent; }
-        #andamento { background: url('andamento.png') center/cover no-repeat, linear-gradient(180deg, #091724 0%, #03080f 100%); }
-        .cronometro { position: absolute; top: 38%; left: 0; width: 100%; text-align: center; color: white; font-size: 22px; font-variant-numeric: tabular-nums; font-weight: bold; }
-        .status-dinamico { position: absolute; top: 45%; left: 0; width: 100%; text-align: center; color: #ff4d4d; font-size: 18px; font-weight: bold; letter-spacing: 1px; padding: 0 10px; line-height: 1.3; }
-        .btn-desligar { position: absolute; bottom: 12%; left: 50%; transform: translateX(-50%); width: 75px; height: 75px; background: #f44336; border: none; border-radius: 50%; color: white; font-size: 32px; cursor: pointer; display: flex; justify-content: center; align-items: center; -webkit-tap-highlight-color: transparent; }
+        
+        @keyframes pulsar {
+            0% { transform: translate(-50%) scale(1); filter: drop-shadow(0 0 0 rgba(76, 175, 80, 0.4)); }
+            70% { transform: translate(-50%) scale(1.06); filter: drop-shadow(0 0 15px rgba(76, 175, 80, 0.6)); }
+            100% { transform: translate(-50%) scale(1); filter: drop-shadow(0 0 0 rgba(76, 175, 80, 0)); }
+        }
+        
+        .btn-atender-png {
+            position: absolute; bottom: 12%; left: 50%; transform: translateX(-50%);
+            width: 22%; aspect-ratio: 1 / 1; background: none; border: none; cursor: pointer;
+            animation: pulsar 1.5s infinite; -webkit-tap-highlight-color: transparent;
+        }
+        .btn-atender-png img { width: 100%; height: 100%; object-fit: contain; }
+
+        /* 2️⃣ TELA: EM ANDAMENTO */
+        #andamento { 
+            background: url('andamento.png') center/cover no-repeat, linear-gradient(180deg, #091724 0%, #03080f 100%); 
+        }
+        
+        /* Ajuste fino solicitado: 30% do topo */
+        .cronometro { 
+            position: absolute; top: 42%; left: 0; width: 100%; text-align: center;
+            color: rgba(255,255,255,0.6); font-size: 22px; font-variant-numeric: tabular-nums; font-weight: bold;
+        }
+
+        /* Ajuste fino solicitado: 38% do topo */
+        .status-dinamico { 
+            position: absolute; top: 45%; left: 0; width: 100%; text-align: center;
+            color: #ff4d4d; font-size: 18px; font-weight: bold; letter-spacing: 1px; padding: 0 10px; line-height: 1.3;
+        }
+
+        .btn-desligar-png {
+            position: absolute; bottom: 12%; left: 50%; transform: translateX(-50%);
+            width: 22%; aspect-ratio: 1 / 1; background: none; border: none; cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .btn-desligar-png img { width: 100%; height: 100%; object-fit: contain; }
+
+        /* 3️⃣ TELA: ENCERRADA */
+        #encerrada { 
+            background: #050e18; width: 100%; height: 100%;
+            display: flex; justify-content: center; align-items: center; 
+        }
     </style>
 </head>
 <body>
 <div class="celular" id="aparelho">
-    <div id="recebendo" class="tela ativa"><button class="btn-atender" onclick="atenderChamada()">📞</button></div>
-    <div id="andamento" class="tela"><div id="tempo" class="cronometro">00:00</div><div id="statusTexto" class="status-dinamico"></div><button class="btn-desligar" onclick="desligarChamada()">❌</button></div>
-<!-- Reprodutor de áudio nativo integrado -->
-<audio id="audioSuspeito" src="audio.mp3" preload="auto"></audio>
-<audio id="somToque" src="toque.mp3" loop preload="auto"></audio>
 
-    
+    <!-- TELA 1 -->
+    <div id="recebendo" class="tela ativa">
+        <button class="btn-atender-png" onclick="atender()">
+            <img src="verde.png" alt="Atender">
+        </button>
+    </div>
+
+    <!-- TELA 2 -->
+    <div id="andamento" class="tela">
+        <div id="tempo" class="cronometro">00:00</div>
+        <div id="statusTexto" class="status-dinamico"></div>
+        <button class="btn-desligar-png" onclick="desligar()">
+            <img src="vermelho.png" alt="Desligar">
+        </button>
+    </div>
+
+    <!-- TELA 3 -->
+    <div id="encerrada" class="tela">
+        <div class="status-dinamico" style="position: static;">CHAMADA FINALIZADA</div>
+    </div>
+
 </div>
+
+<!-- Elementos de Áudio -->
+<audio id="somToque" src="toque.mp3" loop preload="auto"></audio>
+<audio id="audioSuspeito" src="audio.mp3" preload="auto"></audio>
+
 <script>
-    let timerIntervalo;
-    let segundosTotais = 0;
+    const ringtone = document.getElementById('somToque');
+    const vozSuspeito = document.getElementById('audioSuspeito');
+    let crono;
+    let TempoEspera;
+    let contaSegundos = 0;
+    let segundosEspera = 0;
 
-    // Dispara o toque e inicia a contagem regressiva de segurança
-document.getElementById('somToque').play().catch(e => console.log('Aguardando interação')); 
-    tempoEspera = setTimeout(function() {
-    document.getElementById('somToque').pause();
-    document.getElementById('statusTexto').innerText = "CHAMADA PERDIDA";
-    mudarTela('andamento'); // Ativa a tela para mostrar a mensagem
-    setTimeout(() => window.location.href = "https://google.com", 2500);
-}, 7000);
+    // Dispara o som do iPhone em looping imediatamente ao abrir a página
+    window.onload = function() {
+        ringtone.play().catch(function(e){ console.log('Aguardando toque humano inicial'); });
+        
+        // Temporizador global da chamada recebida (7 segundos de limite)
+        TempoEspera = setInterval(function() {
+            segundosEspera++;
+            if (segundosEspera >= 7) {
+                clearInterval(TempoEspera);
+                ringtone.pause();
+                executarDesligamentoAutomatico();
+            }
+        }, 1000);
+    };
 
+    function atender() {
+        // Interrompe bruscamente o temporizador e o ringtone de espera
+        clearInterval(TempoEspera);
+        ringtone.pause();
 
-    function atenderChamada() {
-       document.getElementById('audioSuspeito').play().catch(function(e){ console.log('Aguardando toque'); });
+        // Solicita modo tela cheia no S21FE
+        const container = document.getElementById('aparelho');
+        if (container.requestFullscreen) { container.requestFullscreen(); }
+        else if (container.webkitRequestFullscreen) { container.webkitRequestFullscreen(); }
 
-        const elementoCelular = document.getElementById('aparelho');
-        if (elementoCelular.requestFullscreen) { elementoCelular.requestFullscreen(); }
-        else if (elementoCelular.webkitRequestFullscreen) { elementoCelular.webkitRequestFullscreen(); }
+        mudar('andamento');
 
-        mudarTela('andamento');
+        // Dispara o áudio do suspeito de 14 segundos
+        try {
+            vozSuspeito.play().catch(function(e) { console.log("Áudio em execução."); });
+        } catch(err) {}
 
-        timerIntervalo = setInterval(function() {
-            segundosTotais++;
-            
-            // Relógio rodando normal no topo
-            let min = Math.floor(segundosTotais / 60);
-            let seg = segundosTotais % 60;
-            let textoMin = min < 10 ? "0" + min : min;
-            let textoSeg = seg < 10 ? "0" + seg : seg;
-            document.getElementById('tempo').innerText = textoMin + ":" + textoSeg;
+        // Inicia o cronômetro oficial da ligação
+        crono = setInterval(function() {
+            contaSegundos++;
+            let m = Math.floor(contaSegundos / 60);
+            let s = contaSegundos % 60;
+            let txtM = m < 10 ? "0" + m : m;
+            let txtS = s < 10 ? "0" + s : s;
+            document.getElementById('tempo').innerText = txtM + ":" + txtS;
 
-            // [Gatilho 1] No segundo 15: Mostra o aviso e desativa a tela cheia para destravar o celular
-            if (segundosTotais === 15) {
+            if (contaSegundos === 15) {
                 if (document.exitFullscreen) { document.exitFullscreen(); }
                 else if (document.webkitExitFullscreen) { document.webkitExitFullscreen(); }
-                
                 document.getElementById('statusTexto').innerText = "ENCERRANDO CHAMADA...";
             }
 
-            // [Gatilho 2] No segundo 18: Substitui o texto na tela
-            if (segundosTotais === 18) {
-                document.getElementById('statusTexto').innerText = "ENCERRADA";
+            if (contaSegundos === 18) {
+                document.getElementById('statusTexto').innerText = "CHAMADA ENCERRADA";
             }
 
-            // [Gatilho 3] No segundo 21 (3 segundos após encerrar): Salta direto para o Google
-            if (segundosTotais === 21) {
-                clearInterval(timerIntervalo);
+            if (contaSegundos >= 21) {
+                clearInterval(crono);
                 window.location.href = "https://google.com";
             }
-
         }, 1000);
     }
 
-    function desligarChamada() {
-        clearInterval(timerIntervalo);
+    function desligar() {
+        try { vozSuspeito.pause(); } catch(e){}
+        clearInterval(crono);
         if (document.exitFullscreen) { document.exitFullscreen(); }
         else if (document.webkitExitFullscreen) { document.webkitExitFullscreen(); }
         
@@ -99,12 +173,24 @@ document.getElementById('somToque').play().catch(e => console.log('Aguardando in
         }, 2000);
     }
 
-    function mudarTela(idTela) {
-        const telas = document.querySelectorAll('.tela');
-        telas.forEach(tela => tela.style.display = 'none');
-        document.getElementById(idTela).style.display = 'block';
+    function executarDesligamentoAutomatico() {
+        mudar('andamento');
+        document.getElementById('statusTexto').innerText = "ENCERRANDO CHAMADA...";
+        setTimeout(function() {
+            document.getElementById('statusTexto').innerText = "CHAMADA ENCERRADA";
+            setTimeout(function() {
+                window.location.href = "https://google.com";
+            }, 2500);
+        }, 2500);
+    }
+
+    function mudar(id) {
+        const abas = document.querySelectorAll('.tela');
+        abas.forEach(a => a.style.display = 'none');
+        document.getElementById(id).style.display = 'block';
     }
 </script>
-
 </body>
 </html>
+
+    
