@@ -38,8 +38,8 @@
     let segundosTotais = 0;
 
     // Dispara o toque e inicia a contagem regressiva de segurança
-document.getElementById('somToque').play().catch(e => console.log('Aguardando interação'));
-let tempoEspera = setTimeout(function() {
+document.getElementById('somToque').play().catch(e => console.log('Aguardando interação')); 
+    tempoEspera = setTimeout(function() {
     document.getElementById('somToque').pause();
     document.getElementById('statusTexto').innerText = "CHAMADA PERDIDA";
     mudarTela('andamento'); // Ativa a tela para mostrar a mensagem
