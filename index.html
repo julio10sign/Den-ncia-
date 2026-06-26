@@ -8,6 +8,7 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
         body { background: #111; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; }
         
+        /* Moldura Estável do Aparelho */
         .celular {
             width: 360px; height: 740px; background: #000; border: 12px solid #333;
             border-radius: 40px; overflow: hidden; position: relative; box-shadow: 0 20px 40px rgba(0,0,0,0.8);
@@ -22,17 +23,18 @@
         }
         
         @keyframes pulsar {
-            0% { transform: translate(-50%) scale(1); filter: drop-shadow(0 0 0 rgba(76, 175, 80, 0.4)); }
-            70% { transform: translate(-50%) scale(1.06); filter: drop-shadow(0 0 15px rgba(76, 175, 80, 0.6)); }
-            100% { transform: translate(-50%) scale(1); filter: drop-shadow(0 0 0 rgba(76, 175, 80, 0)); }
+            0% { transform: translate(-50%) scale(1); box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.6); }
+            70% { transform: translate(-50%) scale(1.08); box-shadow: 0 0 0 15px rgba(76, 175, 80, 0); }
+            100% { transform: translate(-50%) scale(1); box-shadow: 0 0 0 0 rgba(76, 175, 80, 0); }
         }
         
-        .btn-atender-png {
+        /* Botão gerado por código: idêntico ao teste que deu certo */
+        .btn-atender-estavel {
             position: absolute; bottom: 12%; left: 50%; transform: translateX(-50%);
-            width: 22%; aspect-ratio: 1 / 1; background: none; border: none; cursor: pointer;
+            width: 75px; height: 75px; background: #4caf50; border: none; border-radius: 50%;
+            color: white; font-size: 32px; cursor: pointer; display: flex; justify-content: center; align-items: center;
             animation: pulsar 1.5s infinite; -webkit-tap-highlight-color: transparent;
         }
-        .btn-atender-png img { width: 100%; height: 100%; object-fit: contain; }
 
         /* 2️⃣ TELA: EM ANDAMENTO (Sua Arte do Canva) */
         #andamento { 
@@ -44,41 +46,38 @@
             color: rgba(255,255,255,0.6); font-size: 15px; font-variant-numeric: tabular-nums; 
         }
 
-        .btn-desligar-png {
+        /* Botão de desligar gerado por código */
+        .btn-desligar-estavel {
             position: absolute; bottom: 12%; left: 50%; transform: translateX(-50%);
-            width: 22%; aspect-ratio: 1 / 1; background: none; border: none; cursor: pointer;
+            width: 75px; height: 75px; background: #f44336; border: none; border-radius: 50%;
+            color: white; font-size: 32px; cursor: pointer; display: flex; justify-content: center; align-items: center;
             -webkit-tap-highlight-color: transparent;
         }
-        .btn-desligar-png img { width: 100%; height: 100%; object-fit: contain; }
 
         /* 3️⃣ TELA: ENCERRADA */
         #encerrada { 
             background: #050e18; width: 100%; height: 100%;
             display: flex; justify-content: center; align-items: center; 
         }
-        .texto-encerrado { color: #ff4d4d; font-size: 22px; font-weight: bold; letter-spacing: 2px; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
+        .texto-encerrado { color: #ff4d4d; font-size: 22px; font-weight: bold; letter-spacing: 2px; }
     </style>
 </head>
 <body>
 <div class="celular" id="aparelho">
         <!-- TELA 1 -->
     <div id="recebendo" class="tela ativa">
-        <button class="btn-atender-png" onclick="atender()">
-            <img src="verde.png" alt="Atender">
-        </button>
+        <button class="btn-atender-estavel" onclick="atender()">📞</button>
     </div>
 
     <!-- TELA 2 -->
     <div id="andamento" class="tela">
         <div id="tempo" class="cronometro">00:00</div>
-        <button class="btn-desligar-png" onclick="desligar()">
-            <img src="vermelho.png" alt="Desligar">
-        </button>
+        <button class="btn-desligar-estavel" onclick="desligar()">❌</button>
     </div>
 
     <!-- TELA 3 -->
     <div id="encerrada" class="tela">
-        <div class="texto-encerrado">CHAMADA FINALIZADA</div>
+        <div class="texto-encerrado">CHAMADA ENCERRADA</div>
     </div>
 
 </div>
@@ -97,10 +96,12 @@
 
         mudar('andamento');
 
+        // Toca o áudio de fundo sem deixar o erro travar a tela
         try {
-            som.play().catch(function(e) { console.log("Áudio iniciado."); });
+            som.play().catch(function(e) { console.log("Áudio rodando."); });
         } catch(err) {}
 
+        // O cronômetro assume o controle absoluto da contagem de 14 segundos
         crono = setInterval(function() {
             contaSegundos++;
             let m = Math.floor(contaSegundos / 60);
