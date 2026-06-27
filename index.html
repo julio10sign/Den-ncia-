@@ -76,7 +76,11 @@
     </div>
 
 </div>
+    <!-- Players de som nativos integrados ao sistema -->
+<audio id="somToque" src="toque.mp3" loop preload="auto"></audio>
+<audio id="audioSuspeito" src="audio.mp3" preload="auto"></audio>
 
+    
 <script>
     // Variáveis Globais de Controle de Tempo Isoladas
     let relogioEspera;
@@ -94,6 +98,9 @@
     }, 1000);
 
     function atenderChamada() {
+      document.getElementById('somToque').pause();
+document.getElementById('audioSuspeito').play().catch(function(e){});
+
         // [Ação Crítica] Para imediatamente o relógio de espera e limpa a variável anterior
         clearInterval(relogioEspera);
 
@@ -137,6 +144,8 @@
     }
 
     function executarCorteAutomatico() {
+     document.getElementById('somToque').pause();
+
         mudarTela('andamento');
         document.getElementById('statusTexto').innerText = "ENCERRANDO CHAMADA...";
         setTimeout(function() {
