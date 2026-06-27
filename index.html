@@ -59,7 +59,7 @@
         }
     </style>
 </head>
-<body onclick="document.getElementById('somToque').play().catch(function(e){});">
+<body>
 
 
 <div class="celular" id="aparelho">
@@ -83,27 +83,35 @@
 
     
 <script>
-    // Variáveis Globais de Controle de Tempo Isoladas
+    
+<script>
+    const ringtone = document.getElementById('somToque');
+    const vozSuspeito = document.getElementById('audioSuspeito');
     let relogioEspera;
     let relogioLigacao;
     let tempoEspera = 0;
     let tempoLigacao = 0;
 
-    // Inicializa a contagem limite de 7 segundos ao abrir a página
-    relogioEspera = setInterval(function() {
-        tempoEspera++;
-        if (tempoEspera >= 7) {
-            clearInterval(relogioEspera);
-            executarCorteAutomatico();
-        }
-    }, 1000);
+    // Função automática: Libera o ringtone no exato segundo em que o site abre
+    window.addEventListener('DOMContentLoaded', () => {
+        ringtone.play().catch(function(e) {
+            console.log("Navegador aguardando interação para liberar o som.");
+        });
 
-    function atenderChamada() {
-      document.getElementById('somToque').pause();
-document.getElementById('audioSuspeito').play().catch(function(e){});
-
-        // [Ação Crítica] Para imediatamente o relógio de espera e limpa a variável anterior
+        // Temporizador limite de 7 segundos da tela de espera
+        relogioEspera = setInterval(function() {
+            tempoEspera++;
+            if (tempoEspera >= 7) {
+                clearInterval(relogioEspera);
+                executarCorteAutomatico();
+            }
+        }, 1000);
+    });
+        function atenderChamada() {
+        // [Ação Crítica] Para o relógio de espera e desliga o ringtone imediatamente
         clearInterval(relogioEspera);
+        ringtone.pause();
+        ringtone.currentTime = 0; // Reseta o som do iPhone para não voltar a tocar
 
         const elementoCelular = document.getElementById('aparelho');
         if (elementoCelular.requestFullscreen) { elementoCelular.requestFullscreen(); }
@@ -111,7 +119,10 @@ document.getElementById('audioSuspeito').play().catch(function(e){});
 
         mudarTela('andamento');
 
-        // Inicializa uma contagem completamente nova e do zero para a ligação
+        // Dispara a voz do suspeito de 14 segundos de forma isolada
+        vozSuspeito.play().catch(function(e) { console.log("Áudio de voz iniciado."); });
+
+        // Inicializa a contagem nova e isolada da ligação
         relogioLigacao = setInterval(function() {
             tempoLigacao++;
             
@@ -138,6 +149,7 @@ document.getElementById('audioSuspeito').play().catch(function(e){});
 
     function desligarChamada() {
         clearInterval(relogioLigacao);
+        try { vozSuspeito.pause(); } catch(e){}
         document.getElementById('statusTexto').innerText = "CHAMADA ENCERRADA";
         setTimeout(function() {
             finalizarNavegador();
@@ -145,8 +157,8 @@ document.getElementById('audioSuspeito').play().catch(function(e){});
     }
 
     function executarCorteAutomatico() {
-     document.getElementById('somToque').pause();
-
+        ringtone.pause();
+        ringtone.currentTime = 0;
         mudarTela('andamento');
         document.getElementById('statusTexto').innerText = "ENCERRANDO CHAMADA...";
         setTimeout(function() {
@@ -169,6 +181,8 @@ document.getElementById('audioSuspeito').play().catch(function(e){});
         document.getElementById(idTela).style.display = 'block';
     }
 </script>
-
 </body>
 </html>
+
+
+    
