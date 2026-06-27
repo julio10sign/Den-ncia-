@@ -16,6 +16,20 @@
         .tela { width: 100%; height: 100%; position: absolute; top: 0; left: 0; display: none; }
         .ativa { display: block; }
 
+        /* 0️⃣ TELA DE ENTRADA: Sua nova arte do Canva integrada como fundo */
+        #intro {
+            background: url('capa.png') center/cover no-repeat;
+            width: 100%; height: 100%; position: relative;
+        }
+        
+        /* Botão invisível posicionado cirurgicamente em cima da palavra "aqui" da sua foto */
+        .btn-invisivel-aqui {
+            position: absolute;
+            top: 75.5%; left: 42%; width: 16%; height: 5%;
+            background: rgba(255, 255, 255, 0); border: none; cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+        }
+
         /* 1️⃣ TELA: RECEBENDO CHAMADA */
         #recebendo { 
             background: url('calling.png') center/cover no-repeat, linear-gradient(180deg, #102a45 0%, #050e18 100%); 
@@ -39,15 +53,13 @@
             background: url('andamento.png') center/cover no-repeat, linear-gradient(180deg, #091724 0%, #03080f 100%); 
         }
         
-        /* Ajustado em 30% do topo */
         .cronometro { 
-            position: absolute; top: 42%; left: 0; width: 100%; text-align: center;
+            position: absolute; top: 30%; left: 0; width: 100%; text-align: center;
             color: white; font-size: 22px; font-variant-numeric: tabular-nums; font-weight: bold;
         }
 
-        /* Ajustado em 38% do topo */
         .status-dinamico { 
-            position: absolute; top: 45%; left: 0; width: 100%; text-align: center;
+            position: absolute; top: 38%; left: 0; width: 100%; text-align: center;
             color: #ff4d4d; font-size: 18px; font-weight: bold; letter-spacing: 1px; padding: 0 10px; line-height: 1.3;
         }
 
@@ -60,30 +72,25 @@
     </style>
 </head>
 <body>
-
-
 <div class="celular" id="aparelho">
-    
-    <!-- TELA 1 -->
-    <div id="recebendo" class="tela ativa">
+    <!-- Tela Inicial de Capa com o botão secreto cobrindo a palavra 'aquí' -->
+    <div id="intro" class="tela ativa">
+        <button class="btn-invisivel-aqui" onclick="destravarESatativarJogo()"></button>
+    </div>
+    <div id="recebendo" class="tela">
         <button class="btn-atender" onclick="atenderChamada()">📞</button>
     </div>
 
-    <!-- TELA 2 -->
     <div id="andamento" class="tela">
         <div id="tempo" class="cronometro">00:00</div>
         <div id="statusTexto" class="status-dinamico"></div>
         <button class="btn-desligar" onclick="desligarChamada()">❌</button>
     </div>
-
 </div>
-    <!-- Players de som nativos integrados ao sistema -->
+
 <audio id="somToque" src="toque.mp3" loop preload="auto"></audio>
 <audio id="audioSuspeito" src="audio.mp3" preload="auto"></audio>
 
-    
-<script>
-    
 <script>
     const ringtone = document.getElementById('somToque');
     const vozSuspeito = document.getElementById('audioSuspeito');
@@ -92,37 +99,40 @@
     let tempoEspera = 0;
     let tempoLigacao = 0;
 
-    // Função automática: Libera o ringtone no exato segundo em que o site abre
-    window.addEventListener('DOMContentLoaded', () => {
-        ringtone.play().catch(function(e) {
-            console.log("Navegador aguardando interação para liberar o som.");
-        });
+    function destravarESatativarJogo() {
+        // Interação humana obrigatória: Executa o toque instantaneamente ao clicar em 'aquí'
+        ringtone.play().catch(function(e){ console.log("Áudio liberado com sucesso."); });
+        
+        mudarTela('recebendo');
 
-        // Temporizador limite de 7 segundos da tela de espera
+        // Dispara a contagem limite de 7 segundos da chamada
         relogioEspera = setInterval(function() {
             tempoEspera++;
             if (tempoEspera >= 7) {
                 clearInterval(relogioEspera);
+                ringtone.pause();
+                ringtone.currentTime = 0;
                 executarCorteAutomatico();
             }
         }, 1000);
-    });
-        function atenderChamada() {
-        // [Ação Crítica] Para o relógio de espera e desliga o ringtone imediatamente
+    }
+
+    function atenderChamada() {
         clearInterval(relogioEspera);
         ringtone.pause();
-        ringtone.currentTime = 0; // Reseta o som do iPhone para não voltar a tocar
+        ringtone.currentTime = 0;
 
-        const elementoCelular = document.getElementById('aparelho');
-        if (elementoCelular.requestFullscreen) { elementoCelular.requestFullscreen(); }
-        else if (elementoCelular.webkitRequestFullscreen) { elementoCelular.webkitRequestFullscreen(); }
+        const container = document.getElementById('aparelho');
+        if (container.requestFullscreen) { container.requestFullscreen(); }
+        else if (container.webkitRequestFullscreen) { container.webkitRequestFullscreen(); }
 
         mudarTela('andamento');
 
-        // Dispara a voz do suspeito de 14 segundos de forma isolada
-        vozSuspeito.play().catch(function(e) { console.log("Áudio de voz iniciado."); });
+        try {
+            vozSuspeito.play().catch(function(e) { console.log("Voz do suspeito ativa."); });
+        } catch(err) {}
 
-        // Inicializa a contagem nova e isolada da ligação
+        // Inicia o cronômetro novo e isolado de 14 segundos
         relogioLigacao = setInterval(function() {
             tempoLigacao++;
             
@@ -156,9 +166,7 @@
         }, 2000);
     }
 
-    function executarCorteAutomatico() {
-        ringtone.pause();
-        ringtone.currentTime = 0;
+    function ejecutarCorteAutomatico() {
         mudarTela('andamento');
         document.getElementById('statusTexto').innerText = "ENCERRANDO CHAMADA...";
         setTimeout(function() {
@@ -183,6 +191,5 @@
 </script>
 </body>
 </html>
-
 
     
